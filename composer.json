@@ -1,0 +1,18 @@
+{
+  "name": "filipekp/helpers",
+  "description": "projekt helperů pro podporu systémů",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Pavel Filípek",
+      "email": "pavel@filipek-czech.cz"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0"
+  },
+  "autoload": {
+    "classmap": ["src"]
+  }
+}
