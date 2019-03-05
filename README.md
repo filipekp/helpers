@@ -1,2 +1,2 @@
 # helpers
-projekt helperů pro podporu systémů
+Classes to facilitate working with different types (string, field, ...)
