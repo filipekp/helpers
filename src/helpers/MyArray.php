@@ -13,11 +13,17 @@
   {
     protected $array = [];
     
-    public function __construct($array) {
-      $this->array = (array)$array;
+    /**
+     * MyArray constructor.
+     *
+     * @param $array
+     */
+    public function __construct(&$array) {
+      $this->array = &$array;
+      $this->array = (array)$this->array;
     }
     
-    public static function init($array) {
+    public static function init(&$array) {
       return new self($array);
     }
     
@@ -34,7 +40,7 @@
       
       return (($getKey) ? key($this->array) : (($value) ? $value : $default));
     }
-  
+    
     /**
      * Vrátí poslední prvek pole.
      *
@@ -78,7 +84,7 @@
       
       return $this->array;
     }
-  
+    
     /**
      * Vrati nahodnou podmnozinu podmnoziny pole.
      *
@@ -92,14 +98,14 @@
     public function randomArrayAssoc($size = NULL, $offset = 0, $length = NULL) {
       $keys = array_slice(array_keys($this->array), $offset, $length);
       shuffle($keys);
-    
+      
       $sample = array_slice($keys, 0, (($size) ? $size : count($keys)));
-    
+      
       return array_combine($sample, array_map(function ($key) {
         return $this->array[$key];
       }, $sample));
     }
-  
+    
     /**
      * Zjisti, zda pozadovany offset existuje v danem objektu.
      *
@@ -111,7 +117,7 @@
     private function offsetExists($offset, $object) {
       return ((is_a($object, '\ArrayAccess')) ? $object->offsetExists($offset) : ((is_array($object)) ? array_key_exists($offset, $object) : FALSE));
     }
-  
+    
     /**
      * "Bezpecne" odebere prvek z pole -> zkontroluje existenci.
      *
@@ -123,7 +129,7 @@
     public function unsetItem($path, $default = NULL) {
       $current = &$this->array;
       $lastIdx = count((array)$path) - 1;
-    
+      
       foreach ((array)$path as $idx => $key) {
         if ($this->offsetExists($key, $current)) {
           if (is_array($current[$key]) && $idx < $lastIdx) {
@@ -131,18 +137,18 @@
           } else {
             $value = ((is_object($current[$key])) ? clone $current[$key] : $current[$key]);
             unset($current[$key]);
-          
+            
             return $value;
           }
         } else {
           break;
         }
       }
-    
-    
+      
+      
       return $default;
     }
-  
+    
     /**
      * "Bezpecne" ziska prvek z pole (celou cestu) -> zkontroluje existenci.
      *
@@ -160,7 +166,7 @@
           return $default;
         }
       }
-    
+      
       return $current;
     }
     
@@ -179,7 +185,7 @@
       echo $content;
       exit();
     }
-  
+    
     /**
      * Filtruje pole podle klicu; tzn. stejne jako funkce array_filter, ale parametr $item v callbacku je klicem.
      *
@@ -195,7 +201,7 @@
         )
       );
     }
-  
+    
     /**
      * Vyfiltruje pole podle prefixu klíčů.
      *
@@ -212,10 +218,10 @@
       } else {
         $filtered = $this->array;
       }
-    
+      
       return $filtered;
     }
-  
+    
     /**
      * Funkce pro rekuzivni implode
      *
@@ -226,7 +232,7 @@
     public function implodeRecursive($glue) {
       return General::implodeRecursive($glue, $this->array);
     }
-  
+    
     /**
      * Modifikace metody implode, kdy posledni prvek mnoziny je oddelen jinym oddelovacem - typicky spojkou a.
      * Polozka jedna, polozka 2 a polozka 3
@@ -242,7 +248,7 @@
         implode($glue, $this->array)
       );
     }
-  
+    
     /**
      * Seradi pole s UTF8 znaky.
      *
@@ -253,17 +259,17 @@
     public function sortAlphabet($desc = FALSE, $compareCallback = NULL) {
       $locale='cs_CZ.utf8';
       $oldLocale = setlocale(LC_COLLATE, '0');
-    
+      
       setlocale(LC_COLLATE, $locale);
       uasort($this->array, function ($a, $b) use ($desc, $compareCallback) {
         $valueA = ((is_null($compareCallback)) ? $a : $compareCallback($a));
         $valueB = ((is_null($compareCallback)) ? $b : $compareCallback($b));
-      
+        
         return (($desc) ? strcoll($valueB, $valueA) : strcoll($valueA, $valueB));
       });
       setlocale(LC_COLLATE, $oldLocale);
     }
-  
+    
     /**
      * Rekurzivne prohleda prvek a najde pozadovanou hodnotu.
      *
@@ -276,18 +282,18 @@
     public static function searchRecursive($needle, $haystack, array $callbacks = ['value' => NULL, 'children' => NULL]) {
       $identity = function($item) { return $item; };
       $children = function($item) { return $item['children']; };
-    
+      
       $callbacks['value'] = ((is_null($callbacks['value'])) ? $identity : $callbacks['value']);
       $callbacks['children'] = ((is_null($callbacks['children'])) ? $children : $callbacks['children']);
-    
+      
       foreach($haystack as $item) {
         if ($callbacks['value']($item) === $needle) {
           return $item;
-        } elseif (($recursive = self::arraySearchRecursive($needle, $callbacks['children']($item), $callbacks)) !== FALSE) {
+        } elseif (($recursive = self::searchRecursive($needle, $callbacks['children']($item), $callbacks)) !== FALSE) {
           return $recursive;
         }
       }
-    
+      
       return FALSE;
     }
   }
