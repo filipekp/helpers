@@ -1,7 +1,6 @@
 {
   "name": "filipekp/helpers",
   "description": "projekt helperů pro podporu systémů",
-  "minimum-stability": "dev",
   "license": "proprietary",
   "authors": [
     {
