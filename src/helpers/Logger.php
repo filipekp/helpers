@@ -3,7 +3,7 @@
   namespace PF\helpers;
   
   /**
-   * Třída Logger reprezentující ...
+   * Třída Logger.
    *
    * @author    Pavel Filípek <pavel@filipek-czech.cz>
    * @copyright © 2019, Proclient s.r.o.
@@ -266,6 +266,7 @@
             umask($oldUmask);
           }
         
+          $this->fileContent = $string;
           $this->changed = FALSE;
           $this->setNew(FALSE);
         }
@@ -339,5 +340,14 @@
      */
     public function setCacheTime($stringTime = '7 days') {
       $this->timeOld = $stringTime;
+    }
+  
+    /**
+     * Vrátí obsah souboru.
+     *
+     * @return string
+     */
+    public function __toString() {
+      return (string)$this->fileContent;
     }
   }
