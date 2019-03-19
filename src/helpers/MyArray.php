@@ -20,7 +20,6 @@
      */
     public function __construct(&$array) {
       $this->array = &$array;
-      $this->array = (array)$this->array;
     }
     
     public static function init(&$array) {
