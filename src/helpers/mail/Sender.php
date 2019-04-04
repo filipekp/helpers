@@ -31,7 +31,7 @@
       
       // create the Transport
       if (is_null($server) || is_null($user) || is_null($password)) {
-        $transport = \Swift_SendmailTransport::newInstance();
+        $transport = \Swift_MailTransport::newInstance();
       } else {
         $transport = \Swift_SmtpTransport::newInstance($server, 25)->setUsername($user)->setPassword($password);
       }
