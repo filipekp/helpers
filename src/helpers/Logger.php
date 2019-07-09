@@ -255,7 +255,7 @@
         
           case self::LOG_TYPE_JSON:
           default:
-            $string = json_encode($this->fileContentArray, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+            $string = json_encode($this->fileContentArray, JSON_PRETTY_PRINT);
             break;
         }
       
