@@ -2,6 +2,8 @@
   
   namespace PF\helpers;
   
+  use finfo;
+
   /**
    * Třída File reprezentující ...
    *
@@ -146,7 +148,14 @@
      */
     public static function remoteMimeType($url) {
       list($mimeType) = explode(';', self::getCurlInfo($url, CURLINFO_CONTENT_TYPE));
-      return trim($mimeType);
+      $mime = trim($mimeType);
+      
+      if (!$mime) {
+        $file_info = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $file_info->buffer(file_get_contents($url));
+      }
+      
+      return $mime;
     }
   
     /**
