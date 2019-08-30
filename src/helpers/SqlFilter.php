@@ -65,7 +65,7 @@
      * @throws \Exception
      */
     public function compare($element, $cmp, $value) {
-      $validComparators = ['<', '>', '<>', '<=', '>='];
+      $validComparators = ['<', '>', '<>', '<=', '>=', '='];
       if (!in_array($cmp, $validComparators)) {
         throw new \Exception('Argument `cmp` (comparator) has not valid value. Allowed values: ' . implode(', ', $validComparators) . '.');
       }
