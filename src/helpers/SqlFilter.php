@@ -53,7 +53,7 @@
 
       return $this;
     }
-
+  
     /**
      * Creates comparison condition of WHERE.
      *
@@ -62,8 +62,14 @@
      * @param string $value
      *
      * @return SqlFilter
+     * @throws \Exception
      */
     public function compare($element, $cmp, $value) {
+      $validComparators = ['<', '>', '<>', '<=', '>='];
+      if (!in_array($cmp, $validComparators)) {
+        throw new \Exception('Argument `cmp` (comparator) has not valid value. Allowed values: ' . implode(', ', $validComparators) . '.');
+      }
+      
       $this->_filter['where'] .= "{$this->quote($element)} {$cmp} ?";
       $this->_filter['bindings'][] = $value;
 
