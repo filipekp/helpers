@@ -64,7 +64,7 @@
      * Vrátí celou cestu k souboru.
      * @return string
      */
-    private function getFilePath() {
+    public function getFilePath() {
       return $this->dir . $this->prefix . $this->fileName . '.' . $this->type;
     }
   
