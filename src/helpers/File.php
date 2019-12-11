@@ -202,7 +202,7 @@
       $files = glob($dirPath . '*', GLOB_MARK);
       foreach ($files as $file) {
         if (is_dir($file)) {
-          $empty &= self::deleteDir($file);
+          $empty &= self::deleteDir($file, $onlyEmpty);
         } elseif (!$onlyEmpty) {
           unlink($file);
         }

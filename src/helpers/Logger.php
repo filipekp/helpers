@@ -94,6 +94,7 @@
      * @param bool $addDate
      *
      * @return array
+     * @throws \Exception
      */
     private function prepareLine($content, $addDate = TRUE) {
       $data = [];
@@ -105,7 +106,7 @@
       }
     
       if ($addDate) {
-        $data['date'] = date('Y-m-d H:i:s');
+        $data['date'] = (new \DateTime('now'))->format('Y-m-d H:i:s.u');
       }
     
       return $data;
@@ -118,6 +119,7 @@
      * @param bool         $addDate
      *
      * @return $this
+     * @throws \Exception
      */
     public function append($content, $addDate = TRUE) {
       $this->fileContentArray[] = $this->prepareLine($content, $addDate);
@@ -133,6 +135,7 @@
      * @param bool         $addDate
      *
      * @return $this
+     * @throws \Exception
      */
     public function appendStore($content, $addDate = TRUE) {
       $this->append($content, $addDate)->store();
@@ -147,6 +150,7 @@
      * @param bool         $addDate
      *
      * @return $this
+     * @throws \Exception
      */
     public function prepend($content, $addDate = TRUE) {
       $this->fileContentArray = array_merge([$this->prepareLine($content, $addDate)], (array)$this->fileContentArray);
@@ -162,6 +166,7 @@
      * @param bool         $addDate
      *
      * @return $this
+     * @throws \Exception
      */
     public function prependStore($content, $addDate = TRUE) {
       $this->prepend($content, $addDate)->store();
