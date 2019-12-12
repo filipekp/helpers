@@ -208,7 +208,7 @@
         }
       }
     
-      return $empty && rmdir($dirPath);
+      return $empty && @rmdir($dirPath);
     }
   
     /**
