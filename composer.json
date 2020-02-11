@@ -11,6 +11,7 @@
   "require": {
     "php": ">=5.6.0",
     "ext-curl": "*",
+    "ext-zip": "*",
     "ext-fileinfo": "*",
     "swiftmailer/swiftmailer": "5.4",
     "nicolab/php-ftp-client": "^1.4"

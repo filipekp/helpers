@@ -2,6 +2,8 @@
   
   namespace PF\helpers;
   
+  use ZipArchive;
+
   /**
    * Třída Logger.
    *
@@ -29,7 +31,9 @@
     private $prefix = NULL;
     private $type = self::LOG_TYPE_JSON;
   
-    private $timeOld = '7 days';
+    private $timeOld           = '7 days';
+    private $archiveNoDelete   = FALSE;
+    private $archiveFolderName = 'archive';
   
     private $changed = FALSE;
     private $new = TRUE;
@@ -80,10 +84,8 @@
      * Vytvoří rekurzivně logovací adresář, pokud ještě neexistuje.
      */
     private function createDir() {
-      if (!file_exists($this->dir)) {
-        $oldUmask = umask(0);
-        mkdir($this->dir, 0777, TRUE);
-        umask($oldUmask);
+      if (!is_dir($this->dir)) {
+        File::mkDir($this->dir, TRUE);
       }
     }
   
@@ -287,11 +289,65 @@
      */
     public function deleteOld() {
       $files = glob($this->dir . $this->prefix . '*.' . $this->type);
+      $timeToCompare = strtotime('-' . $this->timeOld);
     
+      $processArchive = FALSE;
       foreach ($files as $file) {
-        if (file_exists($file) && filemtime($file) < strtotime('-' . $this->timeOld)) {
-          unlink($file);
+        if (is_file($file) && filemtime($file) < $timeToCompare) {
+          if ($this->archiveNoDelete) {
+            $filename = basename($file);
+            $dir = trim(dirname($filename), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->archiveFolderName . DIRECTORY_SEPARATOR;
+            if (!is_dir($dir)) {
+              File::mkDir($dir);
+            }
+            $processArchive = $processArchive || rename($file, $dir . $filename);
+          } else {
+            unlink($file);
+          }
         }
+      }
+      
+      if ($processArchive) {
+        $this->processArchiveFolder();
+      }
+    }
+  
+    /**
+     * Zabali soubory v archivu
+     */
+    private function processArchiveFolder() {
+      $archives = [];
+      $folder = $this->dir . DIRECTORY_SEPARATOR . $this->archiveFolderName . DIRECTORY_SEPARATOR;
+      
+      $files = glob($folder . $this->prefix . '*.');
+      foreach ($files as $file) {
+        $file = array_merge([
+          'filePath' => $file,
+          'modified' => filemtime($file),
+        ], pathinfo($file));
+        
+        $zipName = MyString::seoTypeConversion(
+          date('Y.m.d', $file['modified']) . ' ' . $this->prefix,
+          '_'
+        );
+        if (!array_key_exists($zipName, $archives)) {
+          $archives[$zipName] = [
+            'files' => [],
+          ];
+        }
+  
+        $archives[$zipName]['files'][] = $file;
+      }
+      
+      foreach ($archives as $zipFileName => $zipData) {
+        $zip = new \ZipArchive();
+        $zip->open($folder . $zipFileName . '.zip', ZipArchive::CREATE);
+        foreach ($zipData['files'] as $archiveFile) {
+          if ($zip->addFile($archiveFile['filePath'])) {
+            unlink($archiveFile['filePath']);
+          }
+        }
+        $zip->close();
       }
     }
   
@@ -345,6 +401,12 @@
      */
     public function setCacheTime($stringTime = '7 days') {
       $this->timeOld = $stringTime;
+    }
+  
+    public function archiveNoDelete($archiveNoDelete = TRUE) {
+      $this->archiveNoDelete = $archiveNoDelete;
+      
+      return $this;
     }
   
     /**
