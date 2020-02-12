@@ -297,7 +297,7 @@
         if (is_file($file) && filemtime($file) < $timeToCompare) {
           if ($this->archiveNoDelete) {
             $filename = basename($file);
-            $dir = trim(dirname($file), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->archiveFolderName . DIRECTORY_SEPARATOR;
+            $dir = rtrim(dirname($file), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->archiveFolderName . DIRECTORY_SEPARATOR;
             if (!is_dir($dir)) {
               File::mkDir($dir);
             }
