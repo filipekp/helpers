@@ -299,7 +299,9 @@
             $filename = basename($file);
             $dir = rtrim(dirname($file), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->archiveFolderName . DIRECTORY_SEPARATOR;
             if (!is_dir($dir)) {
-              File::mkDir($dir);
+              if (!File::mkDir($dir)) {
+                throw new \Exception(__CLASS__ . ' not create dir `' . $dir . '`.');
+              }
             }
             
             $processArchive = rename($file, $dir . $filename) || $processArchive;
