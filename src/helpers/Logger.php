@@ -344,18 +344,21 @@
       }
       
       foreach ($archives as $zipFileName => $zipData) {
-        $zip = new \ZipArchive();
+        $zip = new ZipArchive();
         $toDeleteFiles = [];
-        $zip->open($folder . $zipFileName . '.zip', ZipArchive::CREATE);
+        $zipName = $folder . $zipFileName . '.zip';
+        $zip->open($zipName, ((is_file($zipName)) ? NULL : ZipArchive::CREATE));
         foreach ($zipData['files'] as $archiveFile) {
-          if ($zip->addFile($archiveFile['filePath'], str_replace($folder, '', $archiveFile['filePath']))) {
+          if (is_file($archiveFile['filePath']) && $zip->addFile($archiveFile['filePath'], str_replace($folder, '', $archiveFile['filePath']))) {
             $toDeleteFiles[] = $archiveFile['filePath'];
           }
         }
         $zip->close();
         
         foreach ($toDeleteFiles as $toDeleteFile) {
-          unlink($toDeleteFile);
+          if (is_file($toDeleteFile)) {
+            unlink($toDeleteFile);
+          }
         }
       }
     }
