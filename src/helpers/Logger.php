@@ -306,7 +306,7 @@
             
             $processArchive = rename($file, $dir . $filename) || $processArchive;
           } else {
-            unlink($file);
+            @unlink($file);
           }
         }
       }
@@ -347,17 +347,19 @@
         $zip = new ZipArchive();
         $toDeleteFiles = [];
         $zipName = $folder . $zipFileName . '.zip';
-        $zip->open($zipName, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
-        foreach ($zipData['files'] as $archiveFile) {
-          if (is_file($archiveFile['filePath']) && $zip->addFile($archiveFile['filePath'], str_replace($folder, '', $archiveFile['filePath']))) {
-            $toDeleteFiles[] = $archiveFile['filePath'];
+        if (TRUE === $zip->open($zipName)) {
+          foreach ($zipData['files'] as $archiveFile) {
+            if (is_file($archiveFile['filePath']) && $zip->addFile($archiveFile['filePath'], str_replace($folder, '', $archiveFile['filePath']))) {
+              $toDeleteFiles[] = $archiveFile['filePath'];
+            }
           }
+          
+          $zip->close();
         }
-        $zip->close();
         
         foreach ($toDeleteFiles as $toDeleteFile) {
           if (is_file($toDeleteFile)) {
-            unlink($toDeleteFile);
+            @unlink($toDeleteFile);
           }
         }
       }
