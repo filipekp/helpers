@@ -347,7 +347,7 @@
         $zip = new ZipArchive();
         $toDeleteFiles = [];
         $zipName = $folder . $zipFileName . '.zip';
-        if (TRUE === $zip->open($zipName)) {
+        if (TRUE === ($zip->open($zipName, ((is_file($zipName)) ? NULL : ZipArchive::CREATE)))) {
           foreach ($zipData['files'] as $archiveFile) {
             if (is_file($archiveFile['filePath']) && $zip->addFile($archiveFile['filePath'], str_replace($folder, '', $archiveFile['filePath']))) {
               $toDeleteFiles[] = $archiveFile['filePath'];
