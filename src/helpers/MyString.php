@@ -154,7 +154,8 @@
      */
     public static function parseUrl($link) {
       $parsedLink = parse_url(str_replace('&amp;', '&', $link));
-      parse_str(\Prosys::item($parsedLink, 'query', ''), $parsedLink['query']);
+      $parsedLinkArr = MyArray::init($parsedLink);
+      parse_str($parsedLinkArr->item('query', ''), $parsedLink['query']);
     
       return $parsedLink;
     }
