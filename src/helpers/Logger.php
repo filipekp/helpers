@@ -268,11 +268,11 @@
         }
         
         if (($storeRes = (bool)file_put_contents($this->getFilePath(), $string))) {
-          if (file_exists($this->getFilePath())) {
-            $oldUmask = umask(0);
-            chmod($this->getFilePath(), 0777);
-            umask($oldUmask);
-          }
+//          if (file_exists($this->getFilePath())) {
+//            $oldUmask = umask(0);
+//            chmod($this->getFilePath(), 0777);
+//            umask($oldUmask);
+//          }
           
           $this->fileContent = $string;
           $this->changed = FALSE;
