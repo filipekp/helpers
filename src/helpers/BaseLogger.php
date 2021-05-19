@@ -173,7 +173,7 @@
               }
               
               return $res;
-            }, $this->fileContentArray)));
+            }, $this->fileContentArray)), FILE_APPEND);
             break;
         }
         
