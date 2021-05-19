@@ -153,7 +153,7 @@
         $this->createDir();
         
         if ($this->exists() && $this->new) {
-          $this->fileName = MyString::seoTypeConversion($this->fileName . '_' . date('Ymd_His_u'));
+          $this->fileName = MyString::seoTypeConversion($this->fileName . '_' . (new \DateTime('now'))->format('(s_u)'));
         }
   
         $storeRes = FALSE;
