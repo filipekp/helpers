@@ -120,6 +120,8 @@
     public static function getCurlInfo($url, $info) {
       $curl = curl_init($url);
       curl_setopt($curl, CURLOPT_NOBODY, TRUE);
+      curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+      curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
       curl_exec($curl);
     
       $response = curl_getinfo($curl, $info);
