@@ -388,7 +388,7 @@
         'application/powerpoint'                                                    => 'ppt',
         'application/vnd.ms-powerpoint'                                             => 'ppt',
         'application/vnd.ms-office'                                                 => 'ppt',
-        'application/msword'                                                        => 'ppt',
+        'application/msword'                                                        => 'docx',
         'application/vnd.openxmlformats-officedocument.presentationml.presentation' => 'pptx',
         'application/x-photoshop'                                                   => 'psd',
         'image/vnd.adobe.photoshop'                                                 => 'psd',
